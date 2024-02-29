@@ -2,7 +2,7 @@ package maksym.perevalov;
 
 public class Tester {
     public static void main(String[] args) {
-        int cells = 128;
+        int cells = 16;
         int particles = 8;
         double factor = 0.5;
 

@@ -41,3 +41,9 @@ LockPerCellModel - Cells: 32, Particles: 8, TransitionFactor: 0.5, Duration: 5 =
 LockPerCellModel - Cells: 64, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 92198416
 LockPerCellModel - Cells: 128, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 147791439
 
+### Improvement 1
+
+Use synchronized: increase 32%, 27%
+
+LockPerCellModel - Cells: 16, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 56603538
+LockPerCellModel - Cells: 128, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 202498253

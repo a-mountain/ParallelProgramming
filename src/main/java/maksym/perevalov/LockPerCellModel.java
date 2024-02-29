@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
@@ -18,13 +17,13 @@ public class LockPerCellModel {
     private final int[] cells;
     private final long[] transitionsCounter;
     private volatile boolean running = true;
-    private final ReentrantLock[] locks;
+    private final Object[] locks;
 
     public LockPerCellModel(int cellsNumber, int particlesNumber, double transitionFactor, int duration) {
         this.cells = new int[cellsNumber];
         this.cells[0] = particlesNumber;
         this.transitionsCounter = new long[particlesNumber];
-        this.locks = Stream.generate(ReentrantLock::new).limit(cellsNumber).toArray(ReentrantLock[]::new);
+        this.locks = Stream.generate(Object::new).limit(cellsNumber).toArray();
 
         this.particlesNumber = particlesNumber;
         this.transitionFactor = transitionFactor;
@@ -52,13 +51,13 @@ public class LockPerCellModel {
         while (running) {
             var nextIndex = generateNextPosition(currentIndex, random);
 
-            locks[currentIndex].lock();
-            cells[currentIndex] = cells[currentIndex] - 1;
-            locks[currentIndex].unlock();
+            synchronized (locks[currentIndex]) {
+                cells[currentIndex] = cells[currentIndex] - 1;
+            }
 
-            locks[nextIndex].lock();
-            cells[nextIndex] = cells[nextIndex] + 1;
-            locks[nextIndex].unlock();
+            synchronized (locks[nextIndex]) {
+                cells[nextIndex] = cells[nextIndex] + 1;
+            }
 
             currentIndex = nextIndex;
             transitionCounter++;
