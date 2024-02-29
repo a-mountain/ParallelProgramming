@@ -11,13 +11,14 @@ tasks.withType(JavaCompile).configureEach {
 
 ## GlobalLockModel
 
-### Attempt 1
-
-GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 38073305
-
-
-### Attempt 2
+### Optimization 1
 
 Thread.interrupted() changed to volatile variable and Random changed to ThreadLocalRandom:  increase 41%
 
 GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 65148690
+
+### Optimization 2
+
+Use array instead of AtomicLong: increase  22%
+
+GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 88064151
