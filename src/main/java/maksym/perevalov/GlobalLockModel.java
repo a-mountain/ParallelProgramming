@@ -3,9 +3,12 @@ package maksym.perevalov;
 import static java.lang.StringTemplate.STR;
 
 import java.util.Arrays;
+import java.util.SplittableRandom;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.random.RandomGenerator;
 
 import lombok.SneakyThrows;
 
@@ -16,6 +19,7 @@ public class GlobalLockModel {
 
     private final int[] cells;
     private final AtomicLong transitionsCounter = new AtomicLong(0);
+    private volatile boolean running = true;
 
     public GlobalLockModel(int cellsNumber, int particlesNumber, double transitionFactor, int duration) {
         this.cells = new int[cellsNumber];
@@ -28,26 +32,29 @@ public class GlobalLockModel {
 
     @SneakyThrows
     public long start() {
-        try (var executor = Executors.newThreadPerTaskExecutor(Thread.ofPlatform().name("compute-").factory())) {
+        try (var executor = Executors.newThreadPerTaskExecutor(Thread.ofPlatform().name("compute-", 0).factory())) {
             for (int i = 0; i < particlesNumber; i++) {
-                executor.execute(() -> {
-                    int currentIndex = 0;
-                    while (!Thread.interrupted()) {
-                        var nextIndex = generateNextPosition(currentIndex);
-                        synchronized (cells) {
-                            cells[currentIndex] = cells[currentIndex] - 1;
-                            cells[nextIndex] = cells[nextIndex] + 1;
-                            currentIndex = nextIndex;
-                        }
-                        transitionsCounter.incrementAndGet();
-                    }
-                });
+                executor.execute(this::run);
             }
             executor.awaitTermination(duration, TimeUnit.SECONDS);
-            executor.shutdownNow();
+            running = false;
         }
         printState();
         return transitionsCounter.get();
+    }
+
+    private void run() {
+        int currentIndex = 0;
+        var random = ThreadLocalRandom.current();
+        while (running) {
+            var nextIndex = generateNextPosition(currentIndex, random);
+            synchronized (cells) {
+                cells[currentIndex] = cells[currentIndex] - 1;
+                cells[nextIndex] = cells[nextIndex] + 1;
+                currentIndex = nextIndex;
+            }
+            transitionsCounter.incrementAndGet();
+        }
     }
 
     private void printState() {
@@ -58,8 +65,8 @@ public class GlobalLockModel {
         System.out.println(STR."[\{duration}s] Transitions: \{transitions},  Particles: \{particles}, Cells: \{cellsNumber}-\{crystal}");
     }
 
-    private int generateNextPosition(int currentIndex) {
-        double transitionValue = Math.random();
+    private int generateNextPosition(int currentIndex, RandomGenerator random) {
+        double transitionValue = random.nextDouble();
         int newIndex = transitionValue >  transitionFactor ? currentIndex + 1 : currentIndex - 1;
         boolean outOfBound = newIndex < 0 || newIndex >= cells.length;
         return outOfBound ? currentIndex : newIndex;
