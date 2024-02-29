@@ -7,3 +7,10 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += "--enable-preview"
 }
 ```
+
+
+## GlobalLockModel
+
+### Version 1
+
+GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 38073305
