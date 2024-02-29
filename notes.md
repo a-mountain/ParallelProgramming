@@ -22,3 +22,9 @@ GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = 
 Use array instead of AtomicLong: increase  22%
 
 GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 88064151
+
+### Optimization 3 
+
+Use ReentrantLock: increase 32%
+
+GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 124206557

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.random.RandomGenerator;
 
 import lombok.SneakyThrows;
@@ -18,6 +19,7 @@ public class GlobalLockModel {
     private final int[] cells;
     private final long[] transitionsCounter;
     private volatile boolean running = true;
+    private final ReentrantLock lock = new ReentrantLock();
 
     public GlobalLockModel(int cellsNumber, int particlesNumber, double transitionFactor, int duration) {
         this.cells = new int[cellsNumber];
@@ -49,10 +51,12 @@ public class GlobalLockModel {
         long transitionCounter = 0;
         while (running) {
             var nextIndex = generateNextPosition(currentIndex, random);
-            synchronized (cells) {
-                cells[currentIndex] = cells[currentIndex] - 1;
-                cells[nextIndex] = cells[nextIndex] + 1;
-            }
+
+            lock.lock();
+            cells[currentIndex] = cells[currentIndex] - 1;
+            cells[nextIndex] = cells[nextIndex] + 1;
+            lock.unlock();
+
             currentIndex = nextIndex;
             transitionCounter++;
         }
