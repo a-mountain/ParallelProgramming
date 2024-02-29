@@ -9,7 +9,9 @@ tasks.withType(JavaCompile).configureEach {
 ```
 
 
-## GlobalLockModel
+## GlobalLockModel (15 iterations)
+
+GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 38073305
 
 ### Optimization 1
 
@@ -28,3 +30,14 @@ GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = 
 Use ReentrantLock: increase 32%
 
 GlobalLockModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 124206557
+
+## LockPerCellModel (15 iterations)
+
+ReentrantLock:
+
+LockPerCellModel - Cells: 10, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 39171087
+LockPerCellModel - Cells: 16, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 40780903
+LockPerCellModel - Cells: 32, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 60171669
+LockPerCellModel - Cells: 64, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 92198416
+LockPerCellModel - Cells: 128, Particles: 8, TransitionFactor: 0.5, Duration: 5 = Average transitions: 147791439
+
