@@ -1,18 +1,18 @@
 package maksym.perevalov;
 
 import maksym.perevalov.model.BaseModel;
-import maksym.perevalov.model.NoLockModel;
+import maksym.perevalov.model.ReentrantGlobalLockModel;
 
 public class Main {
     public static void main(String[] args) {
         int cells = 10;
         int particles = 8;
-        double factor = 0.2;
+        double factor = 0.7;
 
         int period = 5;
         int duration = 60;
 
-        var model = new NoLockModel(cells, particles, factor);
+        var model = new ReentrantGlobalLockModel(cells, particles, factor);
         run(factor, duration, period, model);
     }
 

@@ -1,6 +1,6 @@
 package maksym.perevalov;
 
-import maksym.perevalov.model.GlobalLockModel;
+import maksym.perevalov.model.ReentrantGlobalLockModel;
 
 public class Tester {
     // R = 53010057
@@ -23,7 +23,7 @@ public class Tester {
     }
 
     private static long run(int cellsNumber, int particlesNumber, double transitionFactor, int duration) {
-        var model = new GlobalLockModel(cellsNumber, particlesNumber, transitionFactor);
+        var model = new ReentrantGlobalLockModel(cellsNumber, particlesNumber, transitionFactor);
         return new Runner(model, duration, 2, true).start();
     }
 }

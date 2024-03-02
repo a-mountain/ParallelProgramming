@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.random.RandomGenerator;
 
-public class GlobalLockModel extends BaseModel {
+public class ReentrantGlobalLockModel extends BaseModel {
     private final int[] cells;
+    private final ReentrantLock lock = new ReentrantLock();
 
-    public GlobalLockModel(int cellsNumber, int particlesNumber, double transitionFactor) {
+    public ReentrantGlobalLockModel(int cellsNumber, int particlesNumber, double transitionFactor) {
         super(cellsNumber, particlesNumber, transitionFactor);
         this.cells = new int[cellsNumber];
         this.cells[0] = particlesNumber;
@@ -17,10 +18,10 @@ public class GlobalLockModel extends BaseModel {
     public int performTransition(int currentIndex, RandomGenerator random) {
         var nextIndex = generateNextPosition(currentIndex, random);
 
-        synchronized (cells) {
-            cells[currentIndex] = cells[currentIndex] - 1;
-            cells[nextIndex] = cells[nextIndex] + 1;
-        }
+        lock.lock();
+        cells[currentIndex] = cells[currentIndex] - 1;
+        cells[nextIndex] = cells[nextIndex] + 1;
+        lock.unlock();
 
         return nextIndex;
     }
