@@ -70,7 +70,7 @@ public class Runner {
     private void suspendPoint() {
         if (suspended && suspendLatch != null) {
             suspendLatch.countDown();
-            suspendLatch.await();
+            if (suspendLatch != null) suspendLatch.await();
             while (suspended) Thread.onSpinWait();
         }
     }
